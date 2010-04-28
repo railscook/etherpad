@@ -55,6 +55,23 @@ function randomUniquePadId() {
 // template rendering
 //----------------------------------------------------------------
 
+function renderTemplateAsStringNew(filename, data) {
+    var bodyHtml = renderTemplateAsString(filename, data);
+    bodyHtml += "\n\n\nFGFRHRHRHR";
+    renderTemplateAsString("default.ejs", {bodyHtml: bodyHtml});
+    return "hi";
+/*
+    return bodyHtml;
+*/
+/*
+
+    response.write(renderTemplateAsString("default.ejs", {bodyHtml: bodyHtml}));
+    if (request.acceptsGzip) {
+      response.setGzip(true);
+    }
+*/
+}
+
 function renderTemplateAsString(filename, data) {
   data = data || {};
   data.helpers = helpers; // global helpers

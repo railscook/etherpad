@@ -82,7 +82,7 @@ var padeditbar = (function(){
           padsavedrevs.saveNow();
         }
         else if (cmd == 'paint') {
-          alert(cmd);
+          alert("You clicked " + cmd);
         }
         else if (cmd == 'clearauthorship') {
           padeditor.ace.execCommand('clearauthorship', function() {
