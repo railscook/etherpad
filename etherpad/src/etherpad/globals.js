@@ -20,7 +20,7 @@
 
 var COMETPATH = "/comet";
 
-var COLOR_PALETTE = ['#ffc6c6','#ffe2bf','#fffcbf','#cbffb3','#b3fff1','#c6e7ff','#dcccff','#ffd9fb'];
+var COLOR_PALETTE = ['#ffc6c6','#ffe2bf','#fffcbf','#cbffb3','#b3fff1','#c6e7ff','#dcccff','#ffd9fb', ,'#cccccc'];
 
 function isProduction() {
   return (appjet.config['etherpad.isProduction'] == "true");
@@ -28,9 +28,9 @@ function isProduction() {
 
 // DOMAIN_NAME_HARD_CODED
 var SUPERDOMAINS = {
-  'karteek.net' : true,
-  'localhost' : true,
-  'localhost.box': true
+ 'localhost' : true
+//,
+// 'avallain.com': true
 };
 
 var PNE_RELEASE_VERSION = "1.1.3";

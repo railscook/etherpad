@@ -148,7 +148,7 @@ function getFullSuperdomainHost() {
 }
 
 function getEmailFromAddr() {
-  var fromDomain = 'etherpad.com';
+  var fromDomain = 'avallain.com';
   if (pne_utils.isPNE()) {
     fromDomain = getFullProDomain();
   }

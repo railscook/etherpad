@@ -200,6 +200,8 @@ a#docbarslider { display: block; height: 0; padding-top: 30px; position: absolut
 <%= editbarButton('clearauthorship', 195) %>
 <%= editbarButton('undo', 227, 25) %>
 <%= editbarButton('redo', 252, 24) %>
+<%= editbarButton('paint', 276, 35) %>
+
 <%= editbarButton('insertunorderedlist', 108) %>
 <%= editbarButton('indent', 140, 25) %>
 <%= editbarButton('outdent', 165, 24) %>

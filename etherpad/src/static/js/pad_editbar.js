@@ -81,6 +81,9 @@ var padeditbar = (function(){
         if (cmd == 'save') {
           padsavedrevs.saveNow();
         }
+        else if (cmd == 'paint') {
+          alert(cmd);
+        }
         else if (cmd == 'clearauthorship') {
           padeditor.ace.execCommand('clearauthorship', function() {
             if (window.confirm("Clear authorship colors on entire document?")) {

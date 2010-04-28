@@ -64,3 +64,5 @@ $JAVA -classpath $CP \
     --configFile=${cfg_file} \
     "$@"
 
+echo "end config file: ${cfg_file}"
+

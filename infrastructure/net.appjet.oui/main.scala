@@ -362,13 +362,13 @@ object main {
               socketError(c, se);
             }
             case e => 
-              println("SERVER ERROR: Couldn't start server: "+i.getMessage());
+              println("SERVER ERROR::: Couldn't start server: "+i.getMessage() + c);
           }
         }
         java.lang.Runtime.getRuntime().halt(1);
       }
       case e => {
-        println("SERVER ERROR: Couldn't start server: "+e.getMessage());
+        println("SERVER ERROR:: Couldn't start server: "+e.getMessage() +c);
         java.lang.Runtime.getRuntime().halt(1);
       }
     }

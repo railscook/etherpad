@@ -20,11 +20,11 @@ if [ `whoami` != "root" ]; then
 fi
 
 db="etherpad"
-
+mysql = "mysql"
 echo "Creating etherpad ${db}..."
-echo "create database ${db};" | ${mysql} -u root
+echo "create database ${db};" | ${mysql} --user=root --password=
 
 echo "Granting priviliges..."
-echo "grant all privileges on ${db}.* to 'etherpad'@'localhost' identified by 'password';" | ${mysql} -u root
+echo "grant all privileges on ${db}.* to 'etherpad'@'localhost' identified by 'password';" | ${mysql} --user=root
 
 echo "Success"

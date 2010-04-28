@@ -199,9 +199,9 @@ function render_dashboard() {
   var body = BODY();
   body.push(A({href: '/ep/admin/'}, html("&laquo; Admin")));
   body.push(H1({style: "border-bottom: 1px solid black;"}, "Dashboard"));
+/*
+  body.push(H2({style: "color: #226; font-size: 1em;"}, "Dashboard"));
 
-  /*
-  body.push(H2({style: "color: #226; font-size: 1em;"}, "License"));
   var license = licensing.getLicense();
   body.push(P(TT("       Licensed To (name): "+license.personName)));
   body.push(P(TT("       Licensed To (organization): "+license.organizationName)));

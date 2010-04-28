@@ -338,6 +338,9 @@ body.limwidth #padpage #padtablediv {
 #padpage #toptoolbar a:focus {
   outline: 0;
 }
+
+.paint, a .paint { background-image: url(/static/img/may09/paint.gif); }
+
 #padpage #toptoolbar .bold { background-image: url(/static/img/may09/bold.gif); }
 #padpage #toptoolbar .italic { background-image: url(/static/img/may09/italic.gif); }
 #padpage #toptoolbar .underline { background-image: url(/static/img/may09/underline.gif); }

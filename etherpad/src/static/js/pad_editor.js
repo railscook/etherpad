@@ -16,6 +16,7 @@
 
 
 var padeditor = (function(){
+
   var self = {
     ace: null, // this is accessed directly from other files
     viewZoom: 100,
