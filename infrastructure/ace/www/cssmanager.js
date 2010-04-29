@@ -1,5 +1,3 @@
-
-
 /**
  * Copyright 2009 Google Inc.
  *
@@ -18,71 +16,76 @@
 
 function makeCSSManager(emptyStylesheetTitle) {
 
-  function getSheetByTitle(title) {
-    var allSheets = document.styleSheets;
-    for(var i=0;i<allSheets.length;i++) {
-      var s = allSheets[i];
-      if (s.title == title) {
-	return s;
-      }
+    function getSheetByTitle(title) {
+        var allSheets = document.styleSheets;
+        for (var i = 0; i < allSheets.length; i++) {
+            var s = allSheets[i];
+            if (s.title == title) {
+                return s;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 
-  /*function getSheetTagByTitle(title) {
-    var allStyleTags = document.getElementsByTagName("style");
-    for(var i=0;i<allStyleTags.length;i++) {
-      var t = allStyleTags[i];
-      if (t.title == title) {
-	return t;
-      }
+    /*function getSheetTagByTitle(title) {
+     var allStyleTags = document.getElementsByTagName("style");
+     for(var i=0;i<allStyleTags.length;i++) {
+     var t = allStyleTags[i];
+     if (t.title == title) {
+     return t;
+     }
+     }
+     return null;
+     }*/
+
+    var browserSheet = getSheetByTitle(emptyStylesheetTitle);
+    //var browserTag = getSheetTagByTitle(emptyStylesheetTitle);
+    function browserRules() {
+        return (browserSheet.cssRules || browserSheet.rules);
     }
-    return null;
-  }*/
 
-  var browserSheet = getSheetByTitle(emptyStylesheetTitle);
-  //var browserTag = getSheetTagByTitle(emptyStylesheetTitle);
-  function browserRules() { return (browserSheet.cssRules || browserSheet.rules); }
-  function browserDeleteRule(i) {
-    if (browserSheet.deleteRule) browserSheet.deleteRule(i);
-    else browserSheet.removeRule(i);
-  }
-  function browserInsertRule(i, selector) {
-    if (browserSheet.insertRule) browserSheet.insertRule(selector+' {}', i);
-    else browserSheet.addRule(selector, null, i);
-  }
-  var selectorList = [];
-
-  function indexOfSelector(selector) {
-    for(var i=0;i<selectorList.length;i++) {
-      if (selectorList[i] == selector) {
-	return i;
-      }
+    function browserDeleteRule(i) {
+        if (browserSheet.deleteRule) browserSheet.deleteRule(i);
+        else browserSheet.removeRule(i);
     }
-    return -1;
-  }
 
-  function selectorStyle(selector) {
-    var i = indexOfSelector(selector);
-    if (i < 0) {
-      // add selector
-      browserInsertRule(0, selector);
-      selectorList.splice(0, 0, selector);
-      i = 0;
+    function browserInsertRule(i, selector) {
+        if (browserSheet.insertRule) browserSheet.insertRule(selector + ' {}', i);
+        else browserSheet.addRule(selector, null, i);
     }
-    return browserRules().item(i).style;
-  }
 
-  function removeSelectorStyle(selector) {
-    var i = indexOfSelector(selector);
-    if (i >= 0) {
-      browserDeleteRule(i);
-      selectorList.splice(i, 1);
+    var selectorList = [];
+
+    function indexOfSelector(selector) {
+        for (var i = 0; i < selectorList.length; i++) {
+            if (selectorList[i] == selector) {
+                return i;
+            }
+        }
+        return -1;
     }
-  }
 
-  return {selectorStyle:selectorStyle, removeSelectorStyle:removeSelectorStyle,
-	  info: function() {
-	    return selectorList.length+":"+browserRules().length;
-	  }};
+    function selectorStyle(selector) {
+        var i = indexOfSelector(selector);
+        if (i < 0) {
+            // add selector
+            browserInsertRule(0, selector);
+            selectorList.splice(0, 0, selector);
+            i = 0;
+        }
+        return browserRules().item(i).style;
+    }
+
+    function removeSelectorStyle(selector) {
+        var i = indexOfSelector(selector);
+        if (i >= 0) {
+            browserDeleteRule(i);
+            selectorList.splice(i, 1);
+        }
+    }
+
+    return {selectorStyle:selectorStyle, removeSelectorStyle:removeSelectorStyle,
+        info: function() {
+            return selectorList.length + ":" + browserRules().length;
+        }};
 }
