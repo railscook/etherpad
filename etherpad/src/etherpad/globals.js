@@ -29,8 +29,6 @@ function isProduction() {
 // DOMAIN_NAME_HARD_CODED
 var SUPERDOMAINS = {
  'localhost' : true
-//,
-// 'avallain.com': true
 };
 
 var PNE_RELEASE_VERSION = "1.1.3";

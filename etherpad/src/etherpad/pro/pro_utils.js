@@ -148,7 +148,7 @@ function getFullSuperdomainHost() {
 }
 
 function getEmailFromAddr() {
-  var fromDomain = 'avallain.com';
+  var fromDomain = 'your-domain.com';
   if (pne_utils.isPNE()) {
     fromDomain = getFullProDomain();
   }

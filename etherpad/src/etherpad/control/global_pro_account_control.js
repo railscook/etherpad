@@ -130,7 +130,7 @@ function render_recover_post() {
     response.redirect(_recoverLink(accountList[0], domainList[0]));
   }
   if (accountList.length > 1) {
-    var fromAddr = '"Avallain Pad Support" <support@avallain.com>';
+    var fromAddr = '"Your domain Pad Support" <support@your-domain.com>';
     var subj = "EtherPad: account information";
     var body = renderTemplateAsString(
       'pro/account/global-multi-domain-recover-email.ejs', {
