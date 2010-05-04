@@ -7,3 +7,6 @@ appjet-eth*.jar
 etherpad-pne-*.jar
 
 
+src/main.js
+src/etherpad/globals.js
+src/static/crossdomain.xml

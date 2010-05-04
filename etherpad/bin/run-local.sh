@@ -16,7 +16,7 @@
 
 mkdir -p data/appjet
 
-MXRAM="1G"
+MXRAM="256m"
 if [ ! -z $1 ]; then
     if [ ! '-' = `echo $1 | head -c 1` ]; then
         MXRAM="$1";
