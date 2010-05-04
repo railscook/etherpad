@@ -96,7 +96,7 @@ function getDefaultPadText() {
   if (pro_utils.isProDomainRequest()) {
     return pro_config.getConfig().defaultPadText;
   }
-  return renderTemplateAsStringNew("misc/pad_default.ejs", {padUrl: request.url.split("?", 1)[0]});
+  return renderTemplateAsString("misc/pad_default.ejs", {padUrl: request.url.split("?", 1)[0]});
 }
 
 function assignName(pad, userId) {
