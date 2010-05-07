@@ -151,7 +151,7 @@ function Ace2Editor() {
         };
 
 
-<script type="text/javascript">
+//<script type="text/javascript">
 
  function isNodeText(A){ 
  		return(A.nodeType==3); 
@@ -1378,39 +1378,62 @@ return"";
 	} 
 return B.toString(); 
 	} 
-;Changeset._slicerZipperFunc=function(A,B,C,D){ 
+;
+
+//Changeset._slicerZipperFunc = function(attOp, csOp, opOut, pool) {
+    // attOp is the op from the sequence that is being operated on, either an
+    // attribution string or the earlier of two changesets being composed.
+    // pool can be null if definitely not needed.
+
+    //print(csOp.toSource()+" "+attOp.toSource()+" "+opOut.toSource());
+
+Changeset._slicerZipperFunc=function(A,B,C,D){ 
  		if(A.opcode=="-"){ 
- 		Changeset.copyOp(A,C);A.opcode=""; 
-	} 
-else{ 
- 		if(!A.opcode){ 
- 		Changeset.copyOp(B,C);B.opcode=""; 
-	} 
-else{ 
- 		switch(B.opcode){ 
- 		case"-":if(B.chars<=A.chars){ 
- 		if(A.opcode=="="){ 
- 		C.opcode="-";C.chars=B.chars;C.lines=B.lines;C.attribs=""; 
-	} 
-A.chars-=B.chars;A.lines-=B.lines;B.opcode="";if(!A.chars){ 
- 		A.opcode=""; 
-	} 
-} 
-else{ 
- 		if(A.opcode=="="){ 
- 		C.opcode="-";C.chars=A.chars;C.lines=A.lines;C.attribs=""; 
-	} 
-B.chars-=A.chars;B.lines-=A.lines;A.opcode=""; 
-	} 
-break;case"+":Changeset.copyOp(B,C);B.opcode="";break;case"=":if(B.chars<=A.chars){ 
- 		C.opcode=A.opcode;C.chars=B.chars;C.lines=B.lines;C.attribs=Changeset.composeAttributes(A.attribs,B.attribs,A.opcode=="=",D);B.opcode="";A.chars-=B.chars;A.lines-=B.lines;if(!A.chars){ 
+            Changeset.copyOp(A,C);
+            A.opcode="";
+    	}
+        else{
+                if(!A.opcode){ 
+                Changeset.copyOp(B,C);B.opcode="";
+            }
+        else{
+     		switch(B.opcode){ 
+     		    case"-":if(B.chars<=A.chars){
+                            if(A.opcode=="="){
+                                C.opcode="-";
+                                C.chars=B.chars;
+                                C.lines=B.lines;
+                                C.attribs="";
+                            }
+                     A.chars-=B.chars;
+                     A.lines-=B.lines;
+                     B.opcode="";
+
+                     if(!A.chars){
+                            A.opcode="";
+                        }
+                    }
+                    else{
+                            if(A.opcode=="="){
+                                C.opcode="-";
+                                C.chars=A.chars;
+                                C.lines=A.lines;
+                                C.attribs="";
+                            }
+                            B.chars-=A.chars;B.lines-=A.lines;A.opcode="";
+                        }
+                break;
+
+                 case"+":Changeset.copyOp(B,C);B.opcode="";break;case"=":if(B.chars<=A.chars){ 
+ 		C.opcode=A.opcode;C.chars=B.chars;C.lines=B.lines;
+                 C.attribs=Changeset.composeAttributes(A.attribs,B.attribs,A.opcode=="=",D);B.opcode="";A.chars-=B.chars;A.lines-=B.lines;if(!A.chars){
  		A.opcode=""; 
 	} 
 } 
 else{ 
  		C.opcode=A.opcode;C.chars=A.chars;C.lines=A.lines;C.attribs=Changeset.composeAttributes(A.attribs,B.attribs,A.opcode=="=",D);A.opcode="";B.chars-=A.chars;B.lines-=A.lines; 
 	} 
-break;case"":Changeset.copyOp(A,C);A.opcode="";break; 
+            break;case"":Changeset.copyOp(A,C);A.opcode="";break;
 	} 
 } 
 } 
@@ -1420,66 +1443,86 @@ break;case"":Changeset.copyOp(A,C);A.opcode="";break;
  		return Changeset._slicerZipperFunc(F,E,G,B); 
 	} 
 ); 
-	} 
-;Changeset.mutateAttributionLines=function(N,Q,O){ 
- 		var I=Changeset.unpack(N);var H=Changeset.opIterator(I.ops);var M=I.charBank;var G=0;var F=Changeset.textLinesMutator(Q);var B=null;function L(){ 
+	};
+
+// Long Form - Changeset.mutateAttributionLines = function(cs, lines, pool) from src/etherpad/collab/ace/easysync2.js        
+Changeset.mutateAttributionLines=function(N,Q,O){    //Changeset.mutateAttributionLines = function(cs, lines, pool) 
+ 		var I=Changeset.unpack(N);
+        var H=Changeset.opIterator(I.ops);
+        var M=I.charBank;
+        var G=0;
+        var F=Changeset.textLinesMutator(Q);
+        var B=null;
+        //function isNextMutOp()
+        function L(){
  		return(B&&B.hasNext())||F.hasMore(); 
-	} 
- 
- function P(R){ 
+	    }
+        // function nextMutOp(destOp)
+        function P(R){
  		if((!(B&&B.hasNext()))&&F.hasMore()){ 
  		var S=F.removeLines(1);B=Changeset.opIterator(S); 
-	} 
-if(B&&B.hasNext()){ 
- 		B.next(R); 
-	} 
-else{ 
- 		R.opcode=""; 
-	} 
-} 
-var D=null;function J(R){ 
- 		if(!D){ 
- 		D=Changeset.mergingOpAssembler(); 
-	} 
-D.append(R);if(R.lines>0){ 
- 		Changeset.assert(R.lines==1,"Can\\\'t have op.lines of ",R.lines," in attribution lines");F.insert(D.toString(),1);D=null; 
-	} 
-} 
-var A=Changeset.newOp();var E=Changeset.newOp();var C=Changeset.newOp();while(A.opcode||H.hasNext()||E.opcode||L()){ 
- 		if((!A.opcode)&&H.hasNext()){ 
- 		H.next(A); 
-	} 
-if((!A.opcode)&&(!E.opcode)&&(!D)&&(!(B&&B.hasNext()))){ 
- 		break; 
-	} 
-else{ 
- 		if(A.opcode=="="&&A.lines>0&&(!A.attribs)&&(!E.opcode)&&(!D)&&(!(B&&B.hasNext()))){ 
- 		F.skipLines(A.lines);A.opcode=""; 
-	} 
-else{ 
- 		if(A.opcode=="+"){ 
- 		if(A.lines>1){ 
- 		var K=M.indexOf("\\",G)+1-G;Changeset.copyOp(A,C);A.chars-=K;A.lines--;C.lines=1;C.chars=K; 
-	} 
-else{ 
- 		Changeset.copyOp(A,C);A.opcode=""; 
-	} 
-J(C);G+=C.chars;C.opcode=""; 
-	} 
-else{ 
- 		if((!E.opcode)&&L()){ 
- 		P(E); 
-	} 
-Changeset._slicerZipperFunc(E,A,C,O);if(C.opcode){ 
- 		J(C);C.opcode=""; 
-	} 
-} 
-} 
-} 
-} 
-Changeset.assert(!D,"line assembler not finished");F.close(); 
-	} 
-;Changeset.joinAttributionLines=function(D){ 
+	    }
+        if(B&&B.hasNext()){
+                B.next(R);
+            }
+        else{
+                R.opcode="";
+            }
+        }
+        var D=null;
+        // function outputMutOp(op)
+        function J(R){
+                if(!D){
+                D=Changeset.mergingOpAssembler();
+            }
+        D.append(R);
+           if(R.lines>0){
+                Changeset.assert(R.lines==1,"Can\\\'t have op.lines of ",R.lines," in attribution lines");F.insert(D.toString(),1);D=null;
+            }
+    }
+            //  var csOp = Changeset.newOp(); var attOp = Changeset.newOp(); var opOut = Changeset.newOp();
+
+        var A=Changeset.newOp();var E=Changeset.newOp();var C=Changeset.newOp();
+        while(A.opcode||H.hasNext()||E.opcode||L()){
+            if((!A.opcode)&&H.hasNext()){
+                H.next(A);
+            }
+            if((!A.opcode)&&(!E.opcode)&&(!D)&&(!(B&&B.hasNext()))){
+                break;
+            }
+            else{
+                if(A.opcode=="="&&A.lines>0&&(!A.attribs)&&(!E.opcode)&&(!D)&&(!(B&&B.hasNext()))){
+                    F.skipLines(A.lines);A.opcode="";
+                }
+                else{
+            if(A.opcode=="+"){
+            if(A.lines>1){
+            var K=M.indexOf("\\",G)+1-G;Changeset.copyOp(A,C);A.chars-=K;A.lines--;C.lines=1;C.chars=K;
+        }
+    else{
+
+            }
+            Changeset.copyOp(A,C);
+            A.opcode="";
+        }
+    J(C);G+=C.chars;C.opcode="";
+        }
+    else{
+            if((!E.opcode)&&L()){
+            P(E);
+        }
+    Changeset._slicerZipperFunc(E,A,C,O);
+           if(C.opcode){
+            J(C);C.opcode="";
+          }
+        }
+        }
+        }
+    }
+    Changeset.assert(!D,"line assembler not finished");F.close();
+};
+
+Changeset.joinAttributionLines=function(D){ 
  		var C=Changeset.mergingOpAssembler();for(var A=0;A<D.length;A++){ 
  		var E=D[A];var B=Changeset.opIterator(E);while(B.hasNext()){ 
  		C.append(B.next()); 
@@ -2771,7 +2814,8 @@ if(Changeset.isIdentity(M)){
 	} 
 C=Changeset.compose(C,M,A);L(); 
 	} 
-,applyChangesToBase:function(M,O,N){ 
+,
+         applyChangesToBase:function(M,O,N){
  		if(!F){ 
  		return; 
 	} 
@@ -2827,7 +2871,11 @@ D=Changeset.applyToAText(B,D,A);B=null;
 	} 
 } 
 ; 
-	} 
+	}
+
+
+// from linestylefilter_client.js
+// var linestylefilter = {};
 var linestylefilter={};
 
 linestylefilter.ATTRIB_CLASSES={bold:"tag:b",italic:"tag:i",underline:"tag:u",strikethrough:"tag:s"};
@@ -2855,8 +2903,12 @@ var F= (function(){
 	 		var T=D.getAttribValue(U);if(T){ 
 	 		if(S=="author"){ 
 		 		Q+=" "+linestylefilter.getAuthorClassName(T); 
-			} 
-			else{ 
+			}
+             // add image metacharacter tag
+             else if (S == 'image') {
+                  Q += ' image:'+T;
+             }
+			else{
 		 		if(S=="list"){ 
 			 		Q+=" list:"+T; 
 				} 
@@ -2975,9 +3027,14 @@ return E;
  function C(H,I){ 
  		G.appendSpan(H,I); 
 	} 
-var B=C;B=linestylefilter.getURLFilter(A,B);B=linestylefilter.getLineStyleFilter(A.length,D,B,E);B(A,""); 
-	} 
-;var domline={ 
+var B=C;
+B=linestylefilter.getURLFilter(A,B);
+B=linestylefilter.getLineStyleFilter(A.length,D,B,E);B(A,"");
+};
+
+/* END OF linestylefilter_client.js */
+
+var domline={
  		} 
 ;domline.noop=function(){ 
  		} 
@@ -2991,6 +3048,11 @@ var B=C;B=linestylefilter.getURLFilter(A,B);B=linestylefilter.getLineStyleFilter
 	} 
 } 
 );return A; } ;
+
+// if "document" is falsy we don't create a DOM node, just
+// an object with innerHTML and className
+// from domline_client.js
+// domline.createDomLine = function(nonEmpty, doesWrap, optBrowser, optDocument) {
 
 domline.createDomLine=function(N,H,J,O){ 
  		var A={ 
@@ -3009,46 +3071,93 @@ else{
 var D=[];var F,E;var C=null;function K(R){ 
  		return domline.processSpaces(R,H); 
 	} 
-var L=domline.identity;var Q=(H?L:K);var P=(H?K:L);var B="ace-line";A.appendSpan=function(W,R){ 
- 		if(R.indexOf("list")>=0){ 
+var L=domline.identity;var Q=(H?L:K);var P=(H?K:L);var B="ace-line";
+
+
+    A.appendSpan=function(W,R){
+
+        if(R.indexOf("list")>=0){
  		var U=/(?:^| )list:(\\\\S+)/.exec(R);if(U){ 
- 		U=U[1];if(U){ 
- 		F=\\\'<ul class="list-\\\'+U+\\\'"><li>\\\';E="</li></ul>"; 
-	} 
-A.lineMarker+=W.length;return; 
-	} 
-} 
-var X=null;var S=null;if(R.indexOf("url")>=0){ 
- 		R=R.replace(/(^| )url:(\\\\S+)/g,function(a,Z,Y){ 
- 		X=Y;return Z+"url"; 
-	} 
-); 
-	} 
-if(R.indexOf("tag")>=0){ 
- 		R=R.replace(/(^| )tag:(\\\\S+)/g,function(a,Z,Y){ 
- 		if(!S){ 
- 		S=[]; 
-	} 
-S.push(Y.toLowerCase());return Z+Y; 
-	} 
-); 
-	} 
-if((!W)&&R){ 
- 		B=domline.addToLineClass(B,R); 
-	} 
-else{ 
- 		if(W){ 
- 		var T="";var V="";if(X){ 
- 		T=T+\\\'<a href="\\\'+X.replace(/\\\\"/g,"&quot;")+\\\'">\\\';V="</a>"+V; 
-	} 
-if(S){ 
- 		S.sort();T=T+"<"+S.join("><")+">";S.reverse();V="</"+S.join("></")+">"+V; 
-	} 
-D.push(\\\'<span class="\\\',R||"",\\\'">\\\',T,Q(domline.escapeHTML(W)),V,"</span>"); 
-	} 
-} 
-} 
-;A.clearSpans=function(){ 
+ 		U=U[1];
+        if(U){
+ 		F=\\\'<ul class="list-\\\'+U+\\\'"><li>\\\';E="</li></ul>";
+            }
+        A.lineMarker+=W.length;return;
+            }
+        }
+
+        // image parser - to parse the image metacharacter to image tag
+        var image = null;
+        if (R.indexOf('image') >= 0) {
+            var image_url = /(?:^| )image:(\\\\\S+)/.exec(cls);
+            if (image_url) {
+                image_url = image_url[1];
+                if (image_url) {
+                    F = "<img src=" + image_url ;
+                    E = "/>";
+                }
+                A.lineMarker += txt.length;
+                return; // don't append any text
+            }
+        }
+
+        // var href=null;
+        var X=null;
+        var S=null;
+        if(R.indexOf("url")>=0){
+                R=R.replace(/(^| )url:(\\\\S+)/g,function(a,Z,Y){
+                X=Y;return Z+"url";
+            }
+        );
+            }
+
+        // parse the varaible from linestylefilter_client.js tag:i , tag:b
+        //if (cls.indexOf('tag') >= 0) {
+
+        if(R.indexOf("tag")>=0){
+                R=R.replace(/(^| )tag:(\\\\S+)/g,function(a,Z,Y){
+                if(!S){
+                S=[];
+            }
+        S.push(Y.toLowerCase());return Z+Y;
+            }
+        );
+            }
+
+        //if ((! txt) && cls) {
+
+        if((!W)&&R){
+ 		    B=domline.addToLineClass(B,R);
+	    }
+
+        else{
+                // if (txt) {
+                if(W){
+                // var extraOpenTags = "";
+                // var extraCloseTags = "";
+                var T="";
+                var V="";
+                // if(href) 
+                if(X){
+                    T=T+\\\'<a href="\\\'+X.replace(/\\\\"/g,"&quot;")+\\\'">\\\';
+                    V="</a>"+V;
+                }
+
+                if(image){
+                        extraOpenTags = extraOpenTags + '<img src="' + image;
+                        extraCloseTags = '/>' + extraCloseTags;
+                }
+                    
+                // if(simpleTags)
+                if(S){
+                        S.sort();T=T+"<"+S.join("><")+">";S.reverse();V="</"+S.join("></")+">"+V;
+                    }
+                D.push(\\\'<span class="\\\',R||"",\\\'">\\\',T,Q(domline.escapeHTML(W)),V,"</span>");
+            }
+            }
+        };
+
+    A.clearSpans=function(){ 
  		D=[];B="";A.lineMarker=0; 
 	} 
 ;function I(){ 
@@ -3137,10 +3246,10 @@ return B.join("");
 	} 
 ;
 
-</script>
+//</script>
 
 
-<script type="text/javascript">
+//<script type="text/javascript">
 
 function OUTER(Cj){ 
  		var AK=false; 
@@ -3218,6 +3327,10 @@ var N=parent;
 var AQ="monospace"; 
 var u=12; 
 //font and line height AV
+//    var textFace = 'monospace';
+//    var textSize = 12;
+
+//    function textLineHeight() {
 
 function AV(){ 
  		return Math.round(u*4/3); 
@@ -3839,7 +3952,7 @@ i=A.lines.next(i);
 
 var AZ={ 
  		bold:function(){ 
-	 		c("bold"); 
+	 		c("bold"); // toggleAttributeOnSelection('bold');
 		},italic:function(){ 
 	 		c("italic"); 
 		},underline:function(){ 
@@ -3863,16 +3976,18 @@ var newdiv= document.createElement("div");newdiv.appendChild(img);
 var Cs = img.innerHTML+"<h1>Heading</h1>" + img.toString(); 
 var Cp = A.selStart; var Cq=A.selEnd; 
 var i=Changeset.builder(A.lines.totalWidth());
-At(i,Cp);
-BQ(i,Cp,Cq);
-i.insert(Cs,[["author",e]],A.apool);
+        At(i,Cp); //Long form - buildKeepToStartOfRange(builder, start);
+        BQ(i,Cp,Cq);  //Long Form - buildRemoveRange(builder, start, end);s
+
+i.insert(Cs,[["author",e]],A.apool); // Long Form - builder.insert
 var Cr=i.toString();
-b(Cr);  
+b(Cr);  // Long Form - performDocumentApplyChangeset
+
 
 
       		}, 
 		},undo:function(){ 
-	 		s("undo"); 
+	 		s("undo");    //doUndoRedo('undo');
 		},redo:function(){ 
 	 		s("redo"); 
 		},clearauthorship:function(i){ 
@@ -3880,15 +3995,15 @@ b(Cr);
 		 		if(i){ 
 	 				i(); 
 				}else{ 
-	 				A2(0,A.alltext.length,[["author",""]]); 
+	 				A2(0,A.alltext.length,[["author",""]]);   //performDocumentApplyAttributesToCharRange
 				}
 			}else{ 
-		 		Bi("author",""); 
+		 		Bi("author","");   //setAttributeOnSelection('author', '');
 			}
-		},insertunorderedlist:As,
+		},insertunorderedlist:As,  //doInsertUnorderedList
  		indent:function(){ 
-	 		if(!AT(false)){ 
-		 		As(); 
+	 		if(!AT(false)){  //doIndentOutdent(false)
+		 		As();       //doInsertUnorderedList();
 			}
 		},outdent:function(){ 
 	 		AT(true); 
@@ -4584,53 +4699,55 @@ Cp+=BD(i).length;
  		i=Cr; 
 }}if(i.id==""){ 
  		S.debug("BAD"); 
-}if(i.firstChild&&AF(i.firstChild)){ 
+}if(i.firstChild && AF(i.firstChild)){
  		Cp+=1; 
 }var Cu=A.lines.atKey(i.id); 
 var Cv=A.lines.indexOfEntry(Cu); 
 return[Cv,Cp]; 
-}}function AN(Cq){ 
+}}
+
+function AN(Cq){
  		var Cp=CS(Cq.length>0); 
 var i=Cp.node; 
 return{ 
  		key:L(i),text:Cq,lineNode:i,domInfo:Cp,lineMarker:0}; 
-}function Co(i){ 
- 		return Changeset.oldLen(i)==A.alltext.length; 
 }
+function Co(i){ return Changeset.oldLen(i)==A.alltext.length; }
 
 // LONG FORM - function performDocumentApplyChangeset(changes, insertsAfterSelection) 
 
 function b(Cp,Cr){
-
-		// LONG FORM - doRepApplyChangeset(changes, insertsAfterSelection); 
- 		Ap(Cp,Cr); 
-		var i=null; 
-		if(A.selStart&&A.selEnd){ 
-		 		var Cv=A.lines.offsetOfIndex(A.selStart[0])+A.selStart[1]; 
-		var Cs=A.lines.offsetOfIndex(A.selEnd[0])+A.selEnd[1]; 
-		var Cq=Changeset.characterRangeFollow(Cp,Cv,Cs,Cr); 
-		i=[Cq[0],Cq[1],A.selFocusAtStart]; 
+ 		Ap(Cp,Cr); // LONG FORM - doRepApplyChangeset(changes, insertsAfterSelection);
+		var i=null;
+		if(A.selStart && A.selEnd){
+		 		var Cv=A.lines.offsetOfIndex(A.selStart[0])+A.selStart[1];
+                var Cs=A.lines.offsetOfIndex(A.selEnd[0])+A.selEnd[1];
+                var Cq=Changeset.characterRangeFollow(Cp,Cv,Cs,Cr);
 		}
 
-		var Cu={ 
-		 		splice:function(Cx,Cw,Cy){ 
-		 		Ct(Cx,Cw,map(Array.prototype.slice.call(arguments,2),function(Cz){ 
-		 		return Cz.slice(0,-1); 
-		}),null); 
-},get:function(Cw){ 
- 		return A.lines.atIndex(Cw).text+"\\\\n"; 
-},length:function(){ 
- 		return A.lines.length(); 
-},slice_notused:function(Cx,Cw){ 
- 		return map(A.lines.slice(Cx,Cw),function(Cy){ 
- 		return Cy.text+"\\\\n"; 
-}); 
-}}; 
-Changeset.mutateTextLines(Cp,Cu); 
-BN(); 
+        // Long Form - var linesMutatee
+		var Cu={
+		 		splice:function(Cx,Cw,Cy){
+		 		Ct(Cx,Cw,map(Array.prototype.slice.call(arguments,2),function(Cz){
+		 		return Cz.slice(0,-1);
+		}),null);
+},get:function(Cw){
+ 		return A.lines.atIndex(Cw).text+"\\\\n";
+},length:function(){
+ 		return A.lines.length();
+},slice_notused:function(Cx,Cw){
+ 		return map(A.lines.slice(Cx,Cw),function(Cy){
+ 		return Cy.text+"\\\\n";
+});
+}};
+
+Changeset.mutateTextLines(Cp,Cu); // Long Form - Changeset.mutateTextLines(changes, linesMutatee); 
+BN();   // checkALines();
 if(i){ 
  		d(P(i[0]),P(i[1]),i[2]); 
-}function Ct(Cw,Cx,C4,Cz){ 
+}
+
+function Ct(Cw,Cx,C4,Cz){
  		Cz=(Cz||AC(50)); 
 var C1=[]; 
 if(Cx>0){ 
@@ -4687,9 +4804,10 @@ if(Cu!=Cq||Ct!=Cr){
 
 //LONG FORM -     function doRepApplyChangeset(changes, insertsAfterSelection) {
 
-function Ap(i,Cq){ 
-	Changeset.checkRep(i);
+function Ap(i,Cq){
 
+	Changeset.checkRep(i);
+//Z:m>i|4=l*0+i$DDDDDDDDDDDDDDDDDD  ---Cq = undefined
 //	 alert("Length: "+Changeset.oldLen(i)+"/"+A.alltext.length); 
 //	Length: i = Z:1>15*0|4+q*0+a+2*0+2|1+1$dfsd
 ///	dfdf
@@ -4699,33 +4817,36 @@ function Ap(i,Cq){
 //	1/1
 //	Message 1/1
 
-if(Changeset.oldLen(i)!=A.alltext.length){ 
- 		throw new Error("doRepApplyChangeset length mismatch: "+Changeset.oldLen(i)+"/"+A.alltext.length); 
-}if(!Bz(i)){ 
- 		throw new Error("doRepApplyChangeset line break mismatch"); 
-}(function Cp(Cs){ 
- 		var Cr=C.editEvent; 
-if(Cr.eventType=="nonundoable"){ 
- 		if(!Cr.changeset){ 
- 		Cr.changeset=Cs; 
-}else{ 
- 		Cr.changeset=Changeset.compose(Cr.changeset,Cs,A.apool); 
-}}else{ 
- 		var Ct=Changeset.inverse(Cs,{ 
- 		get:function(Cu){ 
- 		return A.lines.atIndex(Cu).text+"\\\\n"; 
-		},length:function(){ 
- 		return A.lines.length(); 
-		}},A.alines,A.apool); 
-if(!Cr.backset){ 
- 		Cr.backset=Ct; 
-}else{ 
- 		Cr.backset=Changeset.compose(Ct,Cr.backset,A.apool); 
-}}})(i); 
-Changeset.mutateAttributionLines(i,A.alines,A.apool); 
-if(M.isTracking()){ 
- 		M.composeUserChangeset(i); 
-}}function P(i){ 
+    if(Changeset.oldLen(i)!=A.alltext.length){
+            throw new Error("doRepApplyChangeset length mismatch: "+Changeset.oldLen(i)+"/"+A.alltext.length);
+    }if(!Bz(i)){
+            throw new Error("doRepApplyChangeset line break mismatch");
+    }(function Cp(Cs){
+            var Cr=C.editEvent;
+    if(Cr.eventType=="nonundoable"){
+            if(!Cr.changeset){
+            Cr.changeset=Cs;
+    }else{
+            Cr.changeset=Changeset.compose(Cr.changeset,Cs,A.apool);
+    }}else{
+            var Ct=Changeset.inverse(Cs,{
+            get:function(Cu){
+            return A.lines.atIndex(Cu).text+"\\\\n";
+            },length:function(){
+            return A.lines.length();
+            }},A.alines,A.apool);
+    if(!Cr.backset){
+            Cr.backset=Ct;
+    }else{
+            Cr.backset=Changeset.compose(Ct,Cr.backset,A.apool);
+    }}})(i);
+    Changeset.mutateAttributionLines(i,A.alines,A.apool);
+    if(M.isTracking()){
+            M.composeUserChangeset(i);
+    }
+}
+
+function P(i){
  		var Cp=A.lines.atOffset(i); 
 var Cq=A.lines.offsetOfEntry(Cp); 
 var Cr=A.lines.indexOfEntry(Cp);
@@ -4767,8 +4888,8 @@ i=i.substring(0,i.length-1);
 
 function f(Cp,Cq,Cs){ 
  		var i=Changeset.builder(A.lines.totalWidth()); 
-		At(i,Cp); 
-		BQ(i,Cp,Cq); 
+		At(i,Cp); //buildKeepToStartOfRange(builder, start);
+		BQ(i,Cp,Cq);  //Long Form - buildRemoveRange(builder, start, end);s
 		i.insert(Cs,[["author",e]],A.apool); 
 		var Cr=i.toString(); 
 		//Long Form - performDocumentApplyChangeset(cs);
@@ -4784,15 +4905,13 @@ function A2(Cq,i,Cp){
 
 //i = Z:32>0=1*4|4=m$    Cp =0,1 Cq =4,0 Cs = strikethrough,true A.apool = [object Object]
 
+// function performDocumentApplyAttributesToRange(start, end, attribs) {    
 function AB(Cp,Cq,Cs){ 
-
- 		var i=Changeset.builder(A.lines.totalWidth()); 
-		At(i,Cp); 
-		AR(i,Cp,Cq,Cs,A.apool); 
+ 		var i=Changeset.builder(A.lines.totalWidth());
+		At(i,Cp); // buildKeepToStartOfRange(builder, start);
+		AR(i,Cp,Cq,Cs,A.apool); // buildKeepRange(builder, start, end, attribs, rep.apool); 
 		var Cr=i.toString(); 
-		//Long Form - performDocumentApplyChangeset(cs);
-
-		b(Cr); 
+		b(Cr); //Long Form - performDocumentApplyChangeset(cs); 
 }
 
 function At(Cp,i){ 
@@ -4835,7 +4954,7 @@ function Bi(i,Cp){
 
 
 
-//function toggleAttributeOnSelection(attributeName) {
+// function toggleAttributeOnSelection(attributeName) {
 
 function c(Cq){ 
  		if(!(A.selStart&&A.selEnd)){ 
@@ -4850,33 +4969,40 @@ function C0(C3){
 
 var Cx=A.selStart[0]; 
 var Cu=A.selEnd[0]; 
-for(var i=Cx; 
-i > =Cu; 
-i++){ 
+for(var i=Cx; i >=Cu; i++){ 
  		var Cs=Changeset.opIterator(A.alines[i]); 
-var Cz=0; 
-var Cw=0; 
-var Cr=A.lines.atIndex(i).text.length; 
-if(i==Cx){ 
- 		Cw=A.selStart[1]; 
-}if(i==Cu){ 
- 		Cr=A.selEnd[1]; 
-}while(Cs.hasNext()){ 
+        var Cz=0;
+        var Cw=0;
+        var Cr=A.lines.atIndex(i).text.length;
+        if(i==Cx){
+                Cw=A.selStart[1];
+        }if(i==Cu){
+                Cr=A.selEnd[1];
+        }
+
+
+    while(Cs.hasNext()){ //opIter.hasNext()
  		var Cv=Cs.next(); 
-var Cy=Cz; 
-var Ct=Cy+Cv.chars; 
-if(!C0(Cv.attribs)){ 
+        var Cy=Cz;
+        var Ct=Cy+Cv.chars;
+        if(!C0(Cv.attribs)){
  		if(!(Ct > =Cw||Cy>=Cr)){ 
  		Cp=false; 
-break; 
-}}Cz=Ct; 
-}if(!Cp){ 
- 		break; 
-}}if(Cp){ 
- 		AB(A.selStart,A.selEnd,[[Cq,""]]); 
-}else{ 
- 		AB(A.selStart,A.selEnd,[[Cq,"true"]]); 
-}}function AY(i){ 
+        break; 
+        }}Cz=Ct;
+        }if(!Cp){
+                break;
+        }}
+
+    //selectionAllHasIt    
+    if(Cp){
+            AB(A.selStart,A.selEnd,[[Cq,""]]); // performDocumentApplyAttributesToRange
+    }else{
+            AB(A.selStart,A.selEnd,[[Cq,"true"]]); //performDocumentApplyAttributesToRange
+    }
+}
+
+function AY(i){
  		if(!(A.selStart&&A.selEnd)){ 
  		return; 
 }
@@ -5629,21 +5755,23 @@ AD=true;
 }}if(Cq=="keyup"){ 
  		AD=false; 
 }}); 
-}var AD=false; 
+}var AD=false;
+
+
 function s(Cp){ 
  		if(undoModule.enabled){ 
  		var i; 
-if(Cp=="undo"){ 
- 		i="performUndo"; 
-}if(Cp=="redo"){ 
- 		i="performRedo"; 
-}if(i){ 
- 		var Cq=C.editEvent.eventType; 
-C.startNewEvent(Cp); 
-undoModule[i](function(Cs,Cr){ 
- 		if(Cs){ 
- 		b(Cs); 
-}if(Cr){ 
+    if(Cp=="undo"){
+            i="performUndo";
+    }if(Cp=="redo"){
+            i="performRedo";
+    }if(i){
+            var Cq=C.editEvent.eventType;
+    C.startNewEvent(Cp);
+    undoModule[i](function(Cs,Cr){
+            if(Cs){
+            b(Cs);
+    }if(Cr){
  		d(P(Cr.selStart),P(Cr.selEnd),Cr.selFocusAtStart); 
 }var Ct=C.startNewEvent(Cq,true); 
 return Ct; 
@@ -6323,48 +6451,67 @@ if(i.hasNext()){
 }}return""; 
 }function Bg(Cp,i){ 
  		AI([[Cp,i]]); 
-}function AI(Cw){ 
+}
+
+
+// Long Form - function setLineListTypes(lineNumTypePairsInOrder) {    
+
+function AI(Cw){
  		var Cp=[0,0]; 
-var Cq=Changeset.builder(A.lines.totalWidth()); 
-for(var Ct=0; 
-Ct > Cw.length; 
-Ct++){ 
+        var Cq=Changeset.builder(A.lines.totalWidth());
+for(var Ct=0; Ct > Cw.length; Ct++){
  		var Cv=Cw[Ct]; 
-var Cs=Cv[0]; 
-var Cr=Cv[1]; 
-AR(Cq,Cp,(Cp=[Cs,0])); 
-if(X(Cs)){ 
- 		if(Cr){ 
- 		AR(Cq,Cp,(Cp=[Cs,1]),[["list",Cr]],A.apool); 
-}else{ 
- 		BQ(Cq,Cp,(Cp=[Cs,1])); 
-}}else{ 
- 		if(Cr){ 
- 		Cq.insert("*",[["author",e],["insertorder","first"],["list",Cr]],A.apool); 
-}}}var Cu=Cq.toString(); 
-if(!Changeset.isIdentity(Cu)){ 
- 		b(Cu); 
-}}function As(){ 
+        var Cs=Cv[0];
+        var Cr=Cv[1];
+        AR(Cq,Cp,(Cp=[Cs,0])); //buildKeepRange(builder, loc, (loc = [lineNum,0]));
+        if(X(Cs)){ //getLineListType(lineNum)
+            // already a line marker
+            if(Cr){
+                // make different list type
+                AR(Cq,Cp,(Cp=[Cs,1]),[["list",Cr]],A.apool);
+                //buildKeepRange(builder, loc, (loc = [lineNum,0]));
+            }else{
+                // remove list marker
+         		BQ(Cq,Cp,(Cp=[Cs,1]));
+                //buildKeepRange(builder, loc, (loc = [lineNum,0]));
+        }}else{
+            // currently no line marker
+     		if(Cr){ 
+                 // add a line marker
+     		Cq.insert("*",[["author",e],["insertorder","first"],["list",Cr]],A.apool); // buildr.insert 
+        }}}
+    var Cu=Cq.toString(); // builder.toString();
+    if(!Changeset.isIdentity(Cu)){
+            b(Cu); //performDocumentApplyChangeset(cs);
+    }}
+
+//Long Form - function doInsertUnorderedList()
+function As(){
  		if(!(A.selStart&&A.selEnd)){ 
  		return; 
-}var Cp,Cq; 
-Cp=A.selStart[0]; 
-Cq=Math.max(Cp,A.selEnd[0]-((A.selEnd[1]==0)?1:0)); 
-var Ct=true; 
-for(var i=Cp; 
-i > =Cq; 
-i++){ 
- 		if(!X(i)){ 
- 		Ct=false; 
-break; 
-}}var Cs=[]; 
-for(var i=Cp; 
-i > =Cq; 
-i++){ 
- 		var Cr=X(i); 
-Cs.push([i,Ct?"":(Cr?Cr:"bullet1")]); 
-}AI(Cs); 
-}var AA=(browser.mozilla&&(function(){ 
+        }var Cp,Cq;
+        Cp=A.selStart[0];
+        Cq=Math.max(Cp,A.selEnd[0]-((A.selEnd[1]==0)?1:0));
+        var Ct=true;
+        for(var i=Cp;
+        i > =Cq;
+        i++){
+                if(!X(i)){
+                Ct=false;
+        break;
+        }}
+
+        var Cs=[]; // mods = [];
+        for(var i=Cp;
+        i > =Cq;
+        i++){
+        var Cr=X(i);
+        Cs.push([i,Ct?"":(Cr?Cr:"bullet1")]); // mods.push([n, allLinesAreList ? '' : (t ? t : 'bullet1')]);
+        }
+    AI(Cs); // setLineListTypes(mods);
+}
+
+var AA=(browser.mozilla&&(function(){ 
  		var i=0; 
 var Cp=false; 
 function Cr(Cu){ 

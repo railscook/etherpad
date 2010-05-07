@@ -59,12 +59,17 @@ linestylefilter.getLineStyleFilter = function(lineLength, aline,
 	    if (key == 'author') {
 	      classes += ' '+linestylefilter.getAuthorClassName(value);
 	    }
-            else if (key == 'list') {
+         else if (key == 'list') {
               classes += ' list:'+value;
-            }
+         }
 	    else if (linestylefilter.ATTRIB_CLASSES[key]) {
 	      classes += ' '+linestylefilter.ATTRIB_CLASSES[key];
 	    }
+        // add image metacharacter tag
+        else if (key == 'image') {
+             classes += ' image:'+value;
+        }
+         
 	  }
 	}
       });
